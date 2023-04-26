@@ -1,4 +1,4 @@
-const url = "localhost:8080/api/menus";
+const url = "https://rollingeatsbackend-production.up.railway.app/api/menus";
 const token = JSON.parse(localStorage.getItem("token"));
 // const limit = 12;
 
