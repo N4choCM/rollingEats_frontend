@@ -1,4 +1,4 @@
-const url = "http://localhost:8080/api/users";
+const url = "rollingeatsbackend-production.up.railway.app/api/users";
 const token = JSON.parse(localStorage.getItem("token"));
 const limit = 10;
 
