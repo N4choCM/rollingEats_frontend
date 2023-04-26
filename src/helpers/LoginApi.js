@@ -1,4 +1,4 @@
-const url = "rollingeatsbackend-production.up.railway.app/api/auth/login";
+const url = "http://rollingeatsbackend-production.up.railway.app/api/auth/login";
 
 export const login = async (loginData) => {
   try {

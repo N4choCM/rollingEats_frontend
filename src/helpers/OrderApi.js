@@ -1,4 +1,4 @@
-const url = "rollingeatsbackend-production.up.railway.app/api/orders";
+const url = "http://rollingeatsbackend-production.up.railway.app/api/orders";
 const token = JSON.parse(localStorage.getItem("token"));
 const limit = 15;
 

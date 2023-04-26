@@ -1,4 +1,4 @@
-const url = "rollingeatsbackend-production.up.railway.app/api/search";
+const url = "http://rollingeatsbackend-production.up.railway.app/api/search";
 const token = JSON.parse(localStorage.getItem("token"));
 
 export const searchData = async (collection, term) => {
