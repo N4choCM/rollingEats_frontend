@@ -37,6 +37,10 @@ const OrderScreen = ({ user }) => {
 		setOrders(orders);
 	};
 
+	const updateOrders = () => {
+		findOrdersByUser();
+	  };
+
 	return (
 		<>
 			<br />
@@ -44,19 +48,17 @@ const OrderScreen = ({ user }) => {
 			<br />
 			<br />
 			{orders.length == 0 ? (
-				<div className="row">
-					<div className="col">
-						<h3 className="text-white">Cargando...</h3> //! Spinner?
-					</div>
+				<>
+				<div className="spinner-border custom-spinner" role="status">
+					<span className="visually-hidden">Loading...</span>
 				</div>
+				<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+				</>
 			) : (
 				<div className="m-5 table-responsive">
 					<table className="table table-hover table-striped table-bordered">
 						<thead className="bg-thead">
 							<tr>
-								<th scope="col" className="text-center">
-									ID
-								</th>
 								<th scope="col" className="text-center">
 									Fecha
 								</th>
@@ -64,7 +66,7 @@ const OrderScreen = ({ user }) => {
 									Menú
 								</th>
 								<th scope="col" className="text-center">
-									¿En reparto?
+									¿En preparación?
 								</th>
 								<th scope="col" className="text-center">
 									Precio
@@ -75,22 +77,11 @@ const OrderScreen = ({ user }) => {
 							</tr>
 						</thead>
 						<tbody>
-							{orders.map((order) => (
-								<OrderTableRows orderProp={order} />
+							{orders?.map((order) => (
+								<OrderTableRows orderProp={order} uid={uid} onOrderDelete={updateOrders} />
 							))}
 						</tbody>
-						<tfoot>
-							<tr>
-								<th className="no-border text-center"></th>
-								<th className="no-border text-center"></th>
-								<th className="no-border text-center"></th>
-								<th className="text-center">Total: </th>
-								<th className="text-center">{price} €</th>
-								<th className="no-border text-center"></th>
-							</tr>
-						</tfoot>
 					</table>
-					<button className="btn btn-pay">Tramitar pedido</button>
 				</div>
 			)}
 		</>

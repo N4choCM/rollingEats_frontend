@@ -1,3 +1,7 @@
+body{
+    min-height: 100vh !important;
+  }
+
 .bg-thead{
     background-color: #4C4C6D !important;
     color: white;
@@ -11,4 +15,24 @@
 .btn-pay{
     color: white !important;
     background-color: #4C4C6D !important;
+}
+
+.btn-green{
+    color: white !important;
+    background-color: #5cb85c !important;
+}
+
+.btn-green:hover{
+    color: white !important;
+    background-color: #4c994c !important;
+}
+
+.btn-red{
+    color: white !important;
+    background-color: #dc3545 !important;
+}
+
+.btn-red:hover{
+    color: white !important;
+    background-color: #b03a3a !important;
 }

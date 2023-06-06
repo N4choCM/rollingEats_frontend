@@ -4,11 +4,10 @@
 }
 
 .no-border{
-    border-width: 0px !important;
+    border-width: 0px;
     border-style: none;
 }
 
-.btn-pay{
-    color: white !important;
-    background-color: #4C4C6D !important;
+.border-bottom{
+    border-bottom: 1px solid #4C4C6D !important;
 }

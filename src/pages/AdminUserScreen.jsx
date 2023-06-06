@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getUsersWithoutStatus, deleteUserById } from "../helpers/UserApi";
+import { getUsersWithoutStatus, deleteUserById, getUserById, editUserById } from "../helpers/UserApi";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import "../css/admin.css";
@@ -7,6 +7,7 @@ import EditUserModal from "../components/EditUserModal";
 
 const AdminUserScreen = () => {
 	const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const MySwal = withReactContent(Swal);
 
@@ -25,24 +26,48 @@ const AdminUserScreen = () => {
     setShow(true);
   };
 
+  const changeStatus = async (id) => {
+    try {
+      const response = await getUserById(id);
+      const user = response.user;
+      if(user.role === "ADMIN_ROLE"){
+        MySwal.fire("No se puede bloquear a un administrador", "", "info");
+        return;
+      }else{
+        user.status = !user.status;
+        const result = await editUserById(id, user);
+        fetchData();
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   // Block Order
   const blockUser = async (id) => {
-    MySwal.fire({
-      title: `¿Está seguro que quiere inactivar el usuario con ID ${id}?`,
-      showDenyButton: true,
-      showCancelButton: false,
-      confirmButtonText: "Sí",
-      denyButtonText: `No`,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        deleteUserById(id).then((result) => {
-          fetchData();
-          MySwal.fire("", `${result.msg}`, "success");
-        });
-      } else if (result.isDenied) {
-        MySwal.fire("El usuario no pudo ser inactivado", "", "info");
-      }
-    });
+    const response = await getUserById(id);
+    if(response.user.role === "ADMIN_ROLE"){
+      MySwal.fire("No se puede bloquear a un administrador", "", "info");
+      return;
+    }else{
+      MySwal.fire({
+        title: `¿Está seguro de que quiere inactivar el usuario con ID ${id}?`,
+        showDenyButton: true,
+        showCancelButton: false,
+        confirmButtonText: "Sí",
+        denyButtonText: `No`,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          deleteUserById(id).then((result) => {
+            fetchData();
+            console.log(result)
+            MySwal.fire("", `${result.message}`, "success");
+          });
+        } else if (result.isDenied) {
+          MySwal.fire("El usuario no pudo ser inactivado", "", "info");
+        }
+      });
+    }
   };
 
 
@@ -54,6 +79,7 @@ const AdminUserScreen = () => {
     try {
       const response = await getUsersWithoutStatus();
       setUsers(response.users);
+      setLoading(false);
     } catch (e) {
       console.error(error);
     }
@@ -62,6 +88,14 @@ const AdminUserScreen = () => {
 	return (
     <>
     <br /><br /><br />
+    {loading == true ? (
+				<>
+				<div className="spinner-border custom-spinner" role="status">
+					<span className="visually-hidden">Loading...</span>
+				</div>
+				<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+				</>
+			) : (
 		<div className="m-5 table-responsive">
 			<table className="table table-hover table-striped table-bordered">
 				<thead className="bg-thead">
@@ -81,7 +115,7 @@ const AdminUserScreen = () => {
 							<td className="text-center">{user.name}</td>
 							<td className="text-center">{user.email}</td>
 							<td className="text-center">{user.role}</td>
-              <td className="text-center">{user.status ? "Activado" : "Desactivado"}</td>
+              <td className="text-center"><button className={user.status ? "btn btn-green" : "btn btn-red"} onClick={() => changeStatus(user.uid)}>{user.status ? "Activo" : "Inactivo"}</button></td>
 							<td className="text-center" >
 								<button className="btn" onClick={() => blockUser(user.uid)}>
 									<i className="fa fa-trash text-danger" aria-hidden="true"></i>
@@ -95,6 +129,7 @@ const AdminUserScreen = () => {
 				</tbody>
 			</table>
 		</div>
+      )}
     {show && (
         <EditUserModal show={show} handleClose={handleClose} uid={uid} />
       )}

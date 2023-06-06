@@ -1,4 +1,4 @@
-const url = "https://rollingeatsbackend-production.up.railway.app/api/menus";
+const url = "http://localhost:8080/api/menus";
 const token = JSON.parse(localStorage.getItem("token"));
 // const limit = 12;
 
@@ -85,9 +85,7 @@ export const editMenuById = async (id, menuData) => {
         "x-token": token.toString(),
       },
     });
-
     const data = await resp.json();
-
     return data;
   } catch (e) {
     console.log(e);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getMenusWithoutStatus, deleteMenuById } from "../helpers/MenuApi";
+import { getMenusWithoutStatus, deleteMenuById, getMenuById, editMenuById } from "../helpers/MenuApi";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import "../css/admin.css";
@@ -8,6 +8,7 @@ import CreateMenuModal from "../components/CreateMenuModal";
 
 const AdminMenuScreen = () => {
 	const [menus, setMenus] = useState([]);
+	const [loading, setLoading] = useState(true);
 
 	const MySwal = withReactContent(Swal);
 
@@ -19,7 +20,6 @@ const AdminMenuScreen = () => {
 	const handleClose = () => {
 		setMid(null);
 		setShow(false);
-		setShowCreate(false);
 		fetchData();
 	};
 
@@ -32,6 +32,23 @@ const AdminMenuScreen = () => {
 		setShowCreate(true);
 	};
 
+	const handleCloseCreate = () => {
+		setShowCreate(false);
+		fetchData();
+	};
+
+	const changeStatus = async (id) => {
+		try {
+			const response = await getMenuById(id);
+			const menu = response.menu;
+			menu.status = !menu.status;
+			const result = await editMenuById(id, menu);
+			fetchData();
+		} catch (e) {
+		  console.error(e);
+		}
+	  }
+
 	const blockMenu = async (id) => {
 		MySwal.fire({
 			title: `¿Está seguro de que quiere inactivar el menú con ID ${id}?`,
@@ -43,7 +60,7 @@ const AdminMenuScreen = () => {
 			if (result.isConfirmed) {
 				deleteMenuById(id).then((result) => {
 					fetchData();
-					MySwal.fire("", `${result.msg}`, "success");
+					MySwal.fire("", `${result.message}`, "success");
 				});
 			} else if (result.isDenied) {
 				MySwal.fire("El menú no pudo ser inactivado.", "", "info");
@@ -59,6 +76,7 @@ const AdminMenuScreen = () => {
 		try {
 			const response = await getMenusWithoutStatus();
 			setMenus(response.menus);
+			setLoading(false);
 		} catch (e) {
 			console.error(e);
 		}
@@ -68,6 +86,14 @@ const AdminMenuScreen = () => {
 			<br />
 			<br />
 			<br />
+			{loading == true ? (
+				<>
+				<div className="spinner-border custom-spinner" role="status">
+					<span className="visually-hidden">Loading...</span>
+				</div>
+				<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+				</>
+			) : (
 			<div className="m-5 table-responsive">
 				<table className="table table-hover table-striped table-bordered">
 					<thead className="bg-thead">
@@ -109,7 +135,12 @@ const AdminMenuScreen = () => {
 								<td className="text-center">{menu.category}</td>
 								<td className="text-center">{menu.price}</td>
 								<td className="text-center">
-									{menu.status ? "Activado" : "Desactivado"}
+									<button 
+										className={menu.status ? "btn btn-green" : "btn btn-red"} 
+										onClick={() => changeStatus(menu.id)}
+									>
+										{menu.status ? "Activo" : "Inactivo"}
+									</button>
 								</td>
 								<td className="text-center">
 									<button
@@ -136,6 +167,7 @@ const AdminMenuScreen = () => {
 					</tbody>
 				</table>
 			</div>
+			)}
 			{show && (
 				<EditMenuModal
 					show={show}
@@ -146,7 +178,7 @@ const AdminMenuScreen = () => {
 			{showCreate && (
 				<CreateMenuModal
 					showCreate={showCreate}
-					handleClose={handleClose}
+					handleCloseCreate={handleCloseCreate}
 				/>
 			)}
 		</>
