@@ -12,4 +12,5 @@
 
 .hover-custom:hover{
   background-color: #F2C94C !important;
+  border-radius: 5px;
 }

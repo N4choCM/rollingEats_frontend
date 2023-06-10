@@ -50,7 +50,7 @@ const RegisterScreen = () => {
 		const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
 		if (!regex.test(passwordInput)) {
 			setPasswordError(
-				"La contraseña debe contener al menos 8 caracteres, una mayúscula, una minñuscula y un número."
+				"La contraseña debe contener al menos 8 caracteres, una mayúscula, una minúscula y un número."
 			);
 			setLoading(false);
 			return;
